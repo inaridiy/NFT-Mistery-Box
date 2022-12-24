@@ -16,13 +16,20 @@ export default function Home() {
       </Header>
       <div className="hero bg-base-100 flex-grow">
         <div className="relative w-full h-full">
-          <Image
-            src="/xmas-bg.jpg"
-            alt="XMAS"
-            className="w-full h-full absolute"
-            width="800"
-            height="400"
-          />
+          <div
+            className="w-screen"
+            style={{
+              margin: "0 calc(50% - 50vw)",
+            }}
+          >
+            <Image
+              src="/xmas-bg.jpg"
+              alt="XMAS"
+              className="w-full h-full object-cover absolute"
+              width="800"
+              height="400"
+            />
+          </div>
         </div>
         <div className="hero-content text-center">
           <div className="max-w-md">
