@@ -1,16 +1,43 @@
+import { OwnedNft } from "alchemy-sdk";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { MysteryBox } from "../assets/MysteryBox";
 import { Header } from "../components/Layouts/Header";
+import { useApprove } from "../hooks/useApprove";
+import { useIsApproved } from "../hooks/useIsApproved";
 import { useNfts } from "../hooks/useNfts";
+import { useStakeNFT } from "../hooks/useStakeNFT";
 
 export default function Home() {
+  const router = useRouter();
   const { address } = useAccount();
   const { data, isLoading } = useNfts(address);
-  const [selectedNft, setSelectedNft] = useState<number | null>(null);
+  const [selectedNft, setSelectedNft] = useState<OwnedNft | null>(null);
   const nfts = data?.ownedNfts.filter((nft) => nft.tokenType === "ERC721");
-  console.log(nfts);
+
+  const { data: approved, refetch } = useIsApproved(selectedNft);
+  const approve = useApprove(selectedNft);
+  const stake = useStakeNFT(selectedNft);
+
+  const handleApprove = () => {
+    approve.writeAsync &&
+      approve
+        .writeAsync()
+        .then((tx) => tx.wait())
+        .then(() => refetch());
+  };
+
+  const handleStake = () => {
+    stake.writeAsync &&
+      stake
+        .writeAsync()
+        .then((tx) => tx.wait())
+        .then(() => router.push("/"));
+  };
+
   useEffect(() => {
     setSelectedNft(null);
   }, [address]);
@@ -32,9 +59,9 @@ export default function Home() {
               key={nft.contract.address + i}
               className={clsx(
                 "w-fill cursor-pointer rounded-lg p-0.5",
-                selectedNft === i && "ring-2 ring-info"
+                selectedNft === nft && "ring-2 ring-info"
               )}
-              onClick={() => setSelectedNft(i)}
+              onClick={() => setSelectedNft(nft)}
             >
               <div className="w-full aspect-square bg-base-300 rounded-lg overflow-hidden">
                 {nft.media?.[0]?.format === "mp4" ? (
@@ -57,18 +84,46 @@ export default function Home() {
           ))}
         </div>
       </div>
-      {typeof selectedNft === "number" && (
-        <div className="fixed bottom-0 w-full bg-neutral flex flex-col sm:flex-row p-4 justify-between sm:items-center">
-          <div className="text-neutral-content text-2xl font-bold">
-            {nfts?.[selectedNft].title || "No Name"}
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-neutral-content text-xl font-bold">
-              5 Matic(Returned After)
+      {selectedNft && (
+        <div className="fixed left-0 right-0 bottom-0 w-full bg-neutral p-2">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center max-w-screen-lg mx-auto">
+            <div className="text-neutral-content text-2xl font-bold">
+              {selectedNft.title || "No Name"}
             </div>
-            <button className="btn bg-base-100 text-base-content hover:bg-base-100 hover:text-base-content">
-              Stake NFT
-            </button>
+            <div className="flex items-center gap-4 justify-between">
+              {approved === MysteryBox.address ? (
+                <>
+                  <div className="text-neutral-content text-xl font-bold">
+                    5 Matic(Returned After)
+                  </div>
+                  <button
+                    className="btn btn-info disabled:btn-info"
+                    onClick={handleStake}
+                    disabled={stake.isLoading || stake.isIdle || stake.isError}
+                  >
+                    Stake NFT
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="text-neutral-content text-xl font-bold">
+                    Need Approve
+                  </div>
+                  <button
+                    className={clsx(
+                      "btn btn-error disabled:btn-error",
+                      approve.isLoading && "loading"
+                    )}
+                    disabled={
+                      approve.isLoading || approve.isIdle || approve.isError
+                    }
+                    onClick={handleApprove}
+                  >
+                    Approve
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
