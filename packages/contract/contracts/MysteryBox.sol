@@ -18,7 +18,7 @@ contract MysteryBox {
     bytes32 public randomSeed;
 
     uint256 public totalStaked;
-    mapping(uint256 => StakeData) public stakes;
+    mapping(uint256 => StakeData) public stakes; //1 start index
     mapping(address => uint256) public stakeOf;
     mapping(address => bool) public claimed;
 
@@ -32,9 +32,9 @@ contract MysteryBox {
 
     function stake(address tokenAddress, uint256 tokenId) public payable {
         require(deadlineBlock > block.number, "deadlineBlock has passed");
-        require(msg.value > 5 ether, "msg.value should be 5 ether");
+        require(msg.value >= 5 ether, "msg.value should be 5 ether");
         require(
-            stakes[stakeOf[msg.sender]].staker == address(0),
+            stakeOf[msg.sender] == 0 && stakes[0].staker != msg.sender,
             "You have already staked"
         );
         require(
@@ -85,7 +85,7 @@ contract MysteryBox {
         );
         require(!claimed[msg.sender], "You have already claimed");
         require(
-            stakes[stakeOf[msg.sender]].staker != address(0),
+            stakes[stakeOf[msg.sender]].staker == msg.sender,
             "You have not staked"
         );
 

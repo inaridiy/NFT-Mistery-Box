@@ -4,11 +4,11 @@ import { useContractWrite, usePrepareContractWrite } from "wagmi";
 
 import { MysteryBox } from "../assets/MysteryBox";
 
-export const useStakeNFT = (nft: OwnedNft | null) => {
+export const useStakeNFT = (nft: OwnedNft | null, isApproved: boolean) => {
   const { config, error, refetch } = usePrepareContractWrite({
     ...MysteryBox,
     functionName: "stake",
-    enabled: Boolean(nft?.contract.address && nft?.tokenId),
+    enabled: Boolean(nft?.contract.address && nft?.tokenId && isApproved),
     overrides: {
       value: ethers.utils.parseEther("5").add(1),
     },
@@ -18,7 +18,6 @@ export const useStakeNFT = (nft: OwnedNft | null) => {
     ],
   });
   const write = useContractWrite(config);
-  console.log(error);
 
   return { ...write, error, refetch };
 };

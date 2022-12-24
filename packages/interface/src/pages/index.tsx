@@ -4,9 +4,11 @@ import { useAccount } from "wagmi";
 
 import { ConnectButton } from "../components/ConnectButton";
 import { Header } from "../components/Layouts/Header";
+import { useIsStaked } from "../hooks/useIsStaked";
 
 export default function Home() {
   const { address } = useAccount();
+  const { isStaked, isLoading } = useIsStaked();
   return (
     <>
       <Header title="Mystery">
@@ -31,7 +33,13 @@ export default function Home() {
               Everyone bring your NFT&apos;s and let&apos;s give each other
               Christmas presents!!!
             </p>
-            {address ? (
+            {isLoading ? (
+              <button className="btn loading">Stake NFT</button>
+            ) : isStaked ? (
+              <button className="btn disabled:bg-base-100" disabled>
+                Staked
+              </button>
+            ) : address ? (
               <Link className="btn" href="/stake">
                 Stake NFT
               </Link>

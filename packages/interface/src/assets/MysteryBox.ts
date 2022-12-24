@@ -267,6 +267,6 @@ export const MysteryBoxABI = [
 ] as const;
 
 export const MysteryBox = {
-  address: "0x7c20c6D859217eF192773722f445E589A5C85Ae4",
+  address: "0xFe6E7454fe1564fbFd9b424bc51cbDC5e028d4e2",
   abi: MysteryBoxABI,
 };

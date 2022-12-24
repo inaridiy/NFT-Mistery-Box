@@ -20,7 +20,7 @@ export default function Home() {
 
   const { data: approved, refetch } = useIsApproved(selectedNft);
   const approve = useApprove(selectedNft);
-  const stake = useStakeNFT(selectedNft);
+  const stake = useStakeNFT(selectedNft, approved === MysteryBox.address);
 
   const handleApprove = () => {
     approve.writeAsync &&
@@ -35,7 +35,7 @@ export default function Home() {
       stake
         .writeAsync()
         .then((tx) => tx.wait())
-        .then(() => router.push("/"));
+        .then(() => router.push("/complete"));
   };
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function Home() {
                   <button
                     className="btn btn-info disabled:btn-info"
                     onClick={handleStake}
-                    disabled={stake.isLoading || stake.isIdle || stake.isError}
+                    disabled={stake.isLoading || stake.isError}
                   >
                     Stake NFT
                   </button>
@@ -114,9 +114,7 @@ export default function Home() {
                       "btn btn-error disabled:btn-error",
                       approve.isLoading && "loading"
                     )}
-                    disabled={
-                      approve.isLoading || approve.isIdle || approve.isError
-                    }
+                    disabled={approve.isLoading || approve.isError}
                     onClick={handleApprove}
                   >
                     Approve
