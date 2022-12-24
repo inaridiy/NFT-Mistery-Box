@@ -33,18 +33,18 @@ export default function Home() {
               Everyone bring your NFT&apos;s and let&apos;s give each other
               Christmas presents!!!
             </p>
-            {isLoading ? (
+            {!address ? (
+              <ConnectButton />
+            ) : isLoading ? (
               <button className="btn loading">Stake NFT</button>
             ) : isStaked ? (
               <button className="btn disabled:bg-base-100" disabled>
                 Staked
               </button>
-            ) : address ? (
+            ) : (
               <Link className="btn" href="/stake">
                 Stake NFT
               </Link>
-            ) : (
-              <ConnectButton />
             )}
           </div>
         </div>
