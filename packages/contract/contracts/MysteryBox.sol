@@ -70,7 +70,7 @@ contract MysteryBox {
         uint256 index,
         uint256 count
     ) public view returns (StakeData[] memory) {
-        require(totalStaked > index + count, "index+count is out of range");
+        require(totalStaked >= index + count, "index+count is out of range");
         StakeData[] memory result = new StakeData[](count);
         for (uint256 i = 0; i < count; i++) {
             result[i] = stakes[index + i];
