@@ -1,16 +1,21 @@
 import { OwnedNft } from "alchemy-sdk";
 import { BigNumber, ethers } from "ethers";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useContractWrite, useNetwork, usePrepareContractWrite } from "wagmi";
 
-import { MysteryBox } from "../assets/MysteryBox";
+import { useMysteryBox } from "./useMysteryBox";
 
 export const useStakeNFT = (nft: OwnedNft | null, isApproved: boolean) => {
+  const { chain } = useNetwork();
+  const MysteryBox = useMysteryBox();
   const { config, error, refetch } = usePrepareContractWrite({
     ...MysteryBox,
     functionName: "stake",
     enabled: Boolean(nft?.contract.address && nft?.tokenId && isApproved),
     overrides: {
-      value: ethers.utils.parseEther("5").add(1),
+      value:
+        chain?.id === 1
+          ? ethers.utils.parseEther("0.001")
+          : ethers.utils.parseEther("5"),
     },
     args: [
       nft?.contract.address as `0x${string}`,

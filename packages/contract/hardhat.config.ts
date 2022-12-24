@@ -11,6 +11,10 @@ const config: HardhatUserConfig = {
       url: "https://rpc-mainnet.maticvigil.com",
       accounts: [process.env.PRIVATE_KEY || ""],
     },
+    ethereum: {
+      url: "https://mainnet.infura.io/v3/ddac2247725f422196229bfba8ac3877",
+      accounts: [process.env.PRIVATE_KEY || ""],
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,

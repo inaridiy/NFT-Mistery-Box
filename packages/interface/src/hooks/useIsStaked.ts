@@ -1,9 +1,11 @@
 import { BigNumber } from "ethers";
 import { useAccount, useContractRead } from "wagmi";
 
-import { MysteryBox } from "../assets/MysteryBox";
+import { useMysteryBox } from "./useMysteryBox";
 
 export const useIsStaked = () => {
+  const MysteryBox = useMysteryBox();
+  console.log(MysteryBox);
   const { address } = useAccount();
   const stakeOf = useContractRead({
     ...MysteryBox,

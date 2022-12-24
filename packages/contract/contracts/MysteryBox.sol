@@ -16,6 +16,7 @@ contract MysteryBox {
     uint256 public immutable deadlineBlock; //NFTの受付期限
     uint256 public constant unlockMargin = 100; //結果公開までのブロック数
     bytes32 public randomSeed;
+    uint256 public constant stakeValue = 0.001 ether;
 
     uint256 public totalStaked;
     mapping(uint256 => StakeData) public stakes; //1 start index
@@ -32,7 +33,7 @@ contract MysteryBox {
 
     function stake(address tokenAddress, uint256 tokenId) public payable {
         require(deadlineBlock > block.number, "deadlineBlock has passed");
-        require(msg.value >= 5 ether, "msg.value should be 5 ether");
+        require(msg.value >= stakeValue, "msg.value should be 5 ether");
         require(
             stakeOf[msg.sender] == 0 && stakes[0].staker != msg.sender,
             "You have already staked"
@@ -106,7 +107,7 @@ contract MysteryBox {
             awardStake.staker,
             awardStake.tokenId
         );
-        payable(msg.sender).transfer(5 ether);
+        payable(msg.sender).transfer(stakeValue);
 
         emit Claim(msg.sender, awardStake.tokenAddress, awardStake.tokenId);
     }

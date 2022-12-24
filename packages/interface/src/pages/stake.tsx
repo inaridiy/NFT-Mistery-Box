@@ -4,10 +4,10 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { MysteryBox } from "../assets/MysteryBox";
 import { Header } from "../components/Layouts/Header";
 import { useApprove } from "../hooks/useApprove";
 import { useIsApproved } from "../hooks/useIsApproved";
+import { useMysteryBox } from "../hooks/useMysteryBox";
 import { useNfts } from "../hooks/useNfts";
 import { useStakeNFT } from "../hooks/useStakeNFT";
 
@@ -17,6 +17,7 @@ export default function Home() {
   const { data, isLoading } = useNfts(address);
   const [selectedNft, setSelectedNft] = useState<OwnedNft | null>(null);
   const nfts = data?.ownedNfts.filter((nft) => nft.tokenType === "ERC721");
+  const MysteryBox = useMysteryBox();
 
   const { data: approved, refetch } = useIsApproved(selectedNft);
   const approve = useApprove(selectedNft);
@@ -97,7 +98,7 @@ export default function Home() {
                     5 Matic(Returned After)
                   </div>
                   <button
-                    className="btn btn-info disabled:btn-info"
+                    className="btn btn-info disabled:btn-info disabled:bg-info/10"
                     onClick={handleStake}
                     disabled={stake.isLoading || stake.isError}
                   >

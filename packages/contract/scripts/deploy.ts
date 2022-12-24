@@ -1,8 +1,10 @@
 import { ethers } from "hardhat";
+//Polygon 37258883
+//Ethereum 16261600
 
 async function main() {
   const MysteryBox = await ethers.getContractFactory("MysteryBox");
-  const mysteryBox = await MysteryBox.deploy(37258883);
+  const mysteryBox = await MysteryBox.deploy(16261600);
   await mysteryBox.deployed();
 
   console.log("MysteryBox deployed to:", mysteryBox.address);
