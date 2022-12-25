@@ -1,17 +1,21 @@
 import Image from "next/image";
-import Link from "next/link";
 import { useAccount } from "wagmi";
 
 import { ConnectButton } from "../components/ConnectButton";
 import { Header } from "../components/Layouts/Header";
+import { useClaim } from "../hooks/useClaim";
 import { useIsStaked } from "../hooks/useIsStaked";
+import { useIsUnlocked } from "../hooks/useIsUnlocked";
 
 export default function Home() {
   const { address } = useAccount();
-  const { isStaked, isLoading } = useIsStaked();
+  const { isStaked } = useIsStaked();
+  const { isUnlocked, remianingTime } = useIsUnlocked();
+  const claim = useClaim();
+
   return (
     <>
-      <Header title="Mystery">
+      <Header title={`${(remianingTime / 60).toFixed(1)}minutes to unlock`}>
         <ConnectButton />
       </Header>
       <div className="hero bg-base-100 flex-grow">
@@ -42,16 +46,17 @@ export default function Home() {
             </p>
             {!address ? (
               <ConnectButton />
-            ) : isLoading ? (
-              <button className="btn loading">Stake NFT</button>
-            ) : isStaked ? (
-              <button className="btn disabled:bg-base-100" disabled>
-                Staked
+            ) : isUnlocked && isStaked ? (
+              <button
+                className="btn disabled:bg-base-100"
+                onClick={() => claim.write && claim.write()}
+              >
+                Claim
               </button>
             ) : (
-              <Link className="btn" href="/stake">
-                Stake NFT
-              </Link>
+              <button className="btn disabled:bg-base-100" disabled>
+                Claim
+              </button>
             )}
           </div>
         </div>
